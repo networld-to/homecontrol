@@ -14,6 +14,5 @@ clean:
 		build/homecontrol*
 
 docker:
-	@glide install
 	@docker build -t homecontrol .
 	@docker run -v ~/.philips-hue.json:/root/.philips-hue.json -p 50051:50051 -it --rm homecontrol /go/bin/server

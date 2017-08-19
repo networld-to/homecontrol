@@ -1,6 +1,6 @@
 # Compiling application
 FROM golang:1.8.3-alpine
-RUN apk update; apk add git; apk add gcc musl-dev
+RUN apk update; apk add git; apk add gcc musl-dev curl
 
 ENV PROJ github.com/networld-to/homecontrol
 ENV PROJ_DIR /go/src/${PROJ}
@@ -8,6 +8,9 @@ ENV CGO_ENABLED 1
 
 WORKDIR ${PROJ_DIR}
 COPY . .
+
+RUN curl https://glide.sh/get | sh
+RUN glide install
 
 RUN go build -o /tmp/server -buildmode=pie \
 -ldflags "-s -w -X ${PROJ}/version.Version=$(git describe --always) -X '${PROJ}/version.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" server/main.go
