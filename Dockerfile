@@ -1,5 +1,5 @@
 # Compiling application
-FROM golang:1.8.3-alpine as builder
+FROM golang:1.8.3-alpine
 RUN apk update; apk add git; apk add gcc musl-dev
 
 ENV PROJ github.com/networld-to/homecontrol
@@ -26,7 +26,7 @@ FROM alpine:3.6
 RUN apk add --no-cache ca-certificates
 
 WORKDIR /go/bin
-COPY --from=builder /go/bin/ .
+COPY --from=0 /go/bin/ .
 
 EXPOSE 50051
 

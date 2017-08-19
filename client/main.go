@@ -54,7 +54,7 @@ func getGroups(client hue.LightsClient) *hue.Groups {
 }
 
 func switchOn(client hue.LightsClient, group int) {
-	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: 0.10})
+	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: 0.33})
 	must(err)
 	// log.Printf("Lights switched on: %v", r.Success)
 }
