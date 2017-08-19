@@ -27,3 +27,5 @@ they are in the same network or if the Philips Hub API is accessible.
     # locally.
     go run client/main.go -host 127.0.0.1:50051 -cmd blink -group 2
 
+    # Dockerized client example with service hosted under 192.168.1.2
+    docker run -it --rm networld/homecontrol /go/bin/client -host 192.168.1.2:50051 -cmd blink
