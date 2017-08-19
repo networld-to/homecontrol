@@ -18,7 +18,9 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"golang.org/x/net/context"
+
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 const (
@@ -162,16 +164,25 @@ func loadHueBridgeConfig() HueBridge {
 	return hueBridge
 }
 
+func getServerOptions() []grpc.ServerOption {
+	opts := []grpc.ServerOption{}
+	return opts
+}
+
 func main() {
 	loadHueBridgeConfig()
 	lis, err := net.Listen("tcp", endpoint)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer()
+
+	opts := getServerOptions()
+	s := grpc.NewServer(opts...)
 	hue.RegisterLightsServer(s, &server{})
+
 	// Register reflection service on gRPC server.
-	//reflection.Register(s)
+	reflection.Register(s)
+
 	log.WithField("endpoint", endpoint).WithField("type", "grpc").
 		WithField("version", version.Version).WithField("build", version.Build).Infof("Server started")
 	if err := s.Serve(lis); err != nil {
