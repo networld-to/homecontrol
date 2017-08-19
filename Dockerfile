@@ -1,5 +1,5 @@
 # Compiling application
-FROM golang:1.8.3-alpine
+FROM golang:1.8.3-alpine as builder
 
 RUN apk update; apk add git; apk add gcc musl-dev curl
 RUN curl https://glide.sh/get | sh
@@ -30,7 +30,7 @@ FROM alpine:3.6
 RUN apk add --no-cache ca-certificates
 
 WORKDIR /go/bin
-COPY --from=0 /go/bin/ .
+COPY --from=builder /go/bin/ .
 
 EXPOSE 50051
 
