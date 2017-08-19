@@ -11,6 +11,7 @@ import (
 
 	"github.com/heatxsink/go-hue/groups"
 	"github.com/heatxsink/go-hue/lights"
+	"github.com/heatxsink/go-hue/sensors"
 
 	"github.com/networld-to/homecontrol/hue"
 	"github.com/networld-to/homecontrol/version"
@@ -38,6 +39,42 @@ func (s *server) Echo(ctx context.Context, in *hue.EchoMessage) (*hue.EchoMessag
 	return in, nil
 }
 
+func (s *server) GetSensors(ctx context.Context, in *hue.SensorRequest) (*hue.Sensors, error) {
+	start := time.Now()
+	ss := sensors.New(hueBridge.Bridge, hueBridge.Username)
+	allSensors, err := ss.GetAllSensors()
+	if err != nil {
+		return nil, err
+	}
+	log.WithField("bridge_exec_time", time.Since(start)).
+		WithField("call", "GetSensors").Print("Incoming gRPC call")
+
+	sensorsResp := &hue.Sensors{}
+	sensorsResp.Sensors = make([]*hue.Sensor, len(allSensors))
+	for i, s := range allSensors {
+		sensorsResp.Sensors[i] = &hue.Sensor{
+			ID:               int32(s.ID),
+			UniqueID:         s.UniqueID,
+			Name:             s.Name,
+			Type:             s.Type,
+			ModelID:          s.ModelID,
+			SWVersion:        s.SWVersion,
+			ManufacturerName: s.ManufacturerName,
+			State: &hue.State{
+				ButtonEvent: int32(s.State.ButtonEvent),
+				Dark:        s.State.Dark,
+				Daylight:    s.State.Daylight,
+				LastUpdated: s.State.LastUpdated,
+				LightLevel:  int32(s.State.LightLevel),
+				Presence:    s.State.Presence,
+				Status:      int32(s.State.Status),
+				Temperature: int32(s.State.Temperature),
+			},
+		}
+	}
+	return sensorsResp, nil
+}
+
 func (s *server) GetGroups(ctx context.Context, in *hue.LightsRequest) (*hue.Groups, error) {
 	start := time.Now()
 	gg := groups.New(hueBridge.Bridge, hueBridge.Username)
@@ -48,6 +85,10 @@ func (s *server) GetGroups(ctx context.Context, in *hue.LightsRequest) (*hue.Gro
 	log.WithField("bridge_exec_time", time.Since(start)).
 		WithField("call", "GetGroups").Print("Incoming gRPC call")
 
+	sns, _ := sensors.New(hueBridge.Bridge, hueBridge.Username).GetAllSensors()
+	for _, s := range sns {
+		fmt.Println(s.String())
+	}
 	groups := &hue.Groups{}
 	groups.Groups = make([]*hue.Group, len(allGroups))
 	for i, g := range allGroups {

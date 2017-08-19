@@ -9,6 +9,7 @@ package hue;
 service Lights {
   rpc Echo(EchoMessage) returns (EchoMessage) {}
   rpc GetGroups(LightsRequest) returns (Groups) {}
+  rpc GetSensors(SensorRequest) returns (Sensors) {}
   rpc SwitchOn(LightsRequest) returns (LightsResponse) {}
   rpc SwitchOff(LightsRequest) returns (LightsResponse) {}
   rpc Blink(LightsRequest) returns (LightsResponse) {}
@@ -37,4 +38,34 @@ message Group {
   string Name = 2;
   bool On = 3;
   int32 Brightness = 4;
+}
+
+message SensorRequest {
+  int32 Sensor = 1;
+}
+
+message Sensors {
+  repeated Sensor sensors = 1;
+}
+
+message Sensor {
+  int32 ID = 1;
+  string UniqueID = 2;
+  string Name = 3;
+  string Type = 4;
+  string ManufacturerName = 5;
+  string ModelID = 6;
+  string SWVersion = 7;
+  State State = 8;
+}
+
+message State {
+  int32 ButtonEvent = 1;
+  bool Dark = 2;
+  bool Daylight = 3;
+  string LastUpdated = 4;
+  int32 LightLevel = 5;
+  bool Presence = 6;
+  int32 Status = 7;
+  int32 Temperature = 8;
 }

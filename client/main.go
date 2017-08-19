@@ -54,6 +54,12 @@ func getGroups(client hue.LightsClient) *hue.Groups {
 	return resp
 }
 
+func getSensors(client hue.LightsClient) *hue.Sensors {
+	resp, err := client.GetSensors(context.Background(), &hue.SensorRequest{})
+	must(err)
+	return resp
+}
+
 func switchOn(client hue.LightsClient, group int) {
 	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: 0.33})
 	must(err)
@@ -103,6 +109,11 @@ func main() {
 			}(i)
 		}
 		wg.Wait()
+	case *cmd == "sensors":
+		resp := getSensors(c)
+		for _, sensor := range resp.Sensors {
+			log.Printf("Hue Light Sensor: %v", sensor.String())
+		}
 	case *cmd == "version":
 		log.WithField("version", version.Version).WithField("build", version.Build).Info("Version Information")
 	default:
