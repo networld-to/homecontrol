@@ -15,5 +15,3 @@ build/homecontrol*
 .glide/
 vendor/
 
-# Protobuf generates files
-*.pb.go
