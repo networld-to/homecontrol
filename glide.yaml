@@ -1,0 +1,18 @@
+package: github.com/networld-to/homecontrol
+import:
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+- package: github.com/heatxsink/go-hue
+  subpackages:
+  - groups
+  - lights
+- package: github.com/sirupsen/logrus
+  version: ^1.0.3
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: google.golang.org/grpc
+  version: ^1.5.2
+  subpackages:
+  - reflection

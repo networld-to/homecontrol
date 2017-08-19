@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ido-services.com.iot.hue";
+option java_outer_classname = "HueProto";
+
+package hue;
+
+service Lights {
+  rpc Echo(EchoMessage) returns (EchoMessage) {}
+  rpc GetGroups(LightsRequest) returns (Groups) {}
+  rpc SwitchOn(LightsRequest) returns (LightsResponse) {}
+  rpc SwitchOff(LightsRequest) returns (LightsResponse) {}
+  rpc Blink(LightsRequest) returns (LightsResponse) {}
+}
+
+message EchoMessage {
+  string msg = 1;
+}
+
+message LightsRequest {
+  int32 Group = 1;
+  // Value between 0 and 1
+  float BrightnessPercent = 2;
+}
+
+message LightsResponse {
+  bool success = 1;
+}
+
+message Groups {
+  repeated Group groups = 1;
+}
+
+message Group {
+  int32 ID = 1;
+  string Name = 2;
+  bool On = 3;
+  int32 Brightness = 4;
+}
