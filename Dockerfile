@@ -28,5 +28,5 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /go/bin
 COPY --from=builder /go/bin/ .
 
-EXPOSE 80
+EXPOSE 50051
 
