@@ -14,5 +14,5 @@ clean:
 		build/homecontrol*
 
 docker:
-	@docker build -t homecontrol .
-	@docker run -v ~/.philips-hue.json:/root/.philips-hue.json -p 50051:50051 -it --rm homecontrol /go/bin/server
+	@docker build -t networld/homecontrol .
+	@docker run -v ~/.philips-hue.json:/root/.philips-hue.json -p 50051:50051 -it --rm networld/homecontrol /go/bin/server

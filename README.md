@@ -20,3 +20,10 @@ they are in the same network or if the Philips Hub API is accessible.
     # Clean generate protobuf and binaries
     make clean
 
+    # Start local server
+    go run server/main.go
+
+    # Blink lights that are part of group 2 via homecontrol service hosted
+    # locally.
+    go run client/main.go -host 127.0.0.1:50051 -cmd blink -group 2
+

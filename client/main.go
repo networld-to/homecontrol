@@ -1,9 +1,8 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
-	"strconv"
 	"sync"
 	"time"
 
@@ -16,8 +15,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	address = "127.0.0.1:50051"
+var (
+	address = flag.String("host", "127.0.0.1:50051", "The gRPC service endpoint that will be contacted.")
+	cmd     = flag.String("cmd", "groups", "The command that will be executed.")
+	group   = flag.Int("group", 2, "The light group ID.")
 )
 
 // WithClientInterceptor : EXPERIMENTAL API
@@ -72,38 +73,29 @@ func blink(client hue.LightsClient, group int) {
 }
 
 func main() {
+	flag.Parse()
+
 	start := time.Now()
-	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	conn, err := grpc.Dial(*address, grpc.WithInsecure())
 	must(err)
 	defer conn.Close()
 	c := hue.NewLightsClient(conn)
 
-	cmd := ""
-	if len(os.Args) > 1 {
-		cmd = os.Args[1]
-	}
-	group := 2
-	if len(os.Args) > 2 && os.Args[2] != "" {
-		group, err = strconv.Atoi(os.Args[2])
-		must(err)
-	}
+	log.WithField("address", *address).WithField("cmd", *cmd).WithField("group", *group).Info("Executing command")
 	switch {
-	case cmd == "on":
-		log.Printf("Switching on group %v", group)
-		switchOn(c, group)
-	case cmd == "off":
-		log.Printf("Switching off group %v", group)
-		switchOff(c, group)
-	case cmd == "blink":
-		log.Printf("Blink group %v", group)
-		blink(c, group)
-	case cmd == "perf":
+	case *cmd == "on":
+		switchOn(c, *group)
+	case *cmd == "off":
+		switchOff(c, *group)
+	case *cmd == "blink":
+		blink(c, *group)
+	case *cmd == "perf":
 		wg := &sync.WaitGroup{}
 		n := 10
 		wg.Add(n)
 		for i := 0; i < n; i++ {
 			go func(i int) {
-				connection, _ := grpc.Dial(address, grpc.WithInsecure(), WithClientInterceptor())
+				connection, _ := grpc.Dial(*address, grpc.WithInsecure(), WithClientInterceptor())
 				client := hue.NewLightsClient(connection)
 				client.Echo(context.Background(), &hue.EchoMessage{Msg: "Hello, world " + fmt.Sprint(i)})
 				// getGroups(c)
@@ -111,7 +103,7 @@ func main() {
 			}(i)
 		}
 		wg.Wait()
-	case cmd == "version":
+	case *cmd == "version":
 		log.WithField("version", version.Version).WithField("build", version.Build).Info("Version Information")
 	default:
 		resp := getGroups(c)
