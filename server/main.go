@@ -85,10 +85,6 @@ func (s *server) GetGroups(ctx context.Context, in *hue.LightsRequest) (*hue.Gro
 	log.WithField("bridge_exec_time", time.Since(start)).
 		WithField("call", "GetGroups").Print("Incoming gRPC call")
 
-	sns, _ := sensors.New(hueBridge.Bridge, hueBridge.Username).GetAllSensors()
-	for _, s := range sns {
-		fmt.Println(s.String())
-	}
 	groups := &hue.Groups{}
 	groups.Groups = make([]*hue.Group, len(allGroups))
 	for i, g := range allGroups {
