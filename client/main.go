@@ -124,7 +124,7 @@ func main() {
 		}
 	case "version":
 		log.WithField("version", version.Version).WithField("build", version.Build).Info("Client Version")
-		resp, err := ver.Version(context.Background(), &version.VersionMessage{})
+		resp, err := ver.Version(context.Background(), &version.VersionMessage{Version: version.Version, Build: version.Build})
 		must(err)
 		log.WithField("version", resp.Version).WithField("build", resp.Build).Info("Server Version")
 	default:

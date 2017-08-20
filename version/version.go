@@ -23,7 +23,8 @@ type Server struct{}
 
 // Version : Returns the Server version
 func (s Server) Version(ctx context.Context, in *VersionMessage) (*VersionMessage, error) {
-	log.WithField("message", in).
+	log.WithField("client_version", in.Version).
+		WithField("client_build", in.Build).
 		WithField("call", "Version").Print("Incoming gRPC call")
 	return &VersionMessage{Version: Version, Build: Build}, nil
 }
