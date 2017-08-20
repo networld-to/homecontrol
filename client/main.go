@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -11,12 +12,14 @@ import (
 	"github.com/networld-to/homecontrol/hue"
 	"github.com/networld-to/homecontrol/version"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 var (
 	address = flag.String("host", "127.0.0.1:50051", "The gRPC service endpoint that will be contacted.")
 	cmd     = flag.String("cmd", "groups", "The command that will be executed.")
 	group   = flag.Int("group", 2, "The light group ID.")
+	tls     = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
 )
 
 func must(err error) {
@@ -71,7 +74,7 @@ func getCallOptions() []grpc.CallOption {
 
 func getDialOptions() []grpc.DialOption {
 	opts := []grpc.DialOption{
-		grpc.WithInsecure(),
+		// grpc.WithInsecure(),
 		grpc.WithTimeout(10 * time.Second),
 		grpc.WithBlock(),
 		grpc.WithBackoffMaxDelay(1 * time.Second),
@@ -84,6 +87,16 @@ func main() {
 
 	start := time.Now()
 	opts := getDialOptions()
+	if *tls {
+		log.Info("Activating TLS encryption.")
+		cred, err := credentials.NewClientTLSFromFile(os.Getenv("HOME")+"/.homecontrol/server.crt", "Homecontrol")
+		if err != nil {
+			log.Fatalf("failed TLS: %v", err)
+		}
+		opts = append(opts, grpc.WithTransportCredentials(cred))
+	} else {
+		opts = append(opts, grpc.WithInsecure())
+	}
 	conn, err := grpc.Dial(*address, opts...)
 	must(err)
 	defer conn.Close()

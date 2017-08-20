@@ -15,3 +15,5 @@ build/homecontrol*
 .glide/
 vendor/
 
+# Generated TLS Certificates
+tls/server*

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -20,6 +21,7 @@ import (
 	"golang.org/x/net/context"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -169,7 +171,10 @@ func getServerOptions() []grpc.ServerOption {
 	return opts
 }
 
+var tls = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
+
 func main() {
+	flag.Parse()
 	loadHueBridgeConfig()
 	lis, err := net.Listen("tcp", endpoint)
 	if err != nil {
@@ -177,6 +182,14 @@ func main() {
 	}
 
 	opts := getServerOptions()
+	if *tls {
+		log.Info("Activating TLS encryption.")
+		cred, err := credentials.NewServerTLSFromFile(os.Getenv("HOME")+"/.homecontrol/server.crt", os.Getenv("HOME")+"/.homecontrol/server.key")
+		if err != nil {
+			log.Fatalf("failed TLS: %v", err)
+		}
+		opts = append(opts, grpc.Creds(cred))
+	}
 	s := grpc.NewServer(opts...)
 	hue.RegisterLightsServer(s, &server{})
 
