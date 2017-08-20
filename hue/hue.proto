@@ -8,11 +8,17 @@ package hue;
 
 service Lights {
   rpc Echo(EchoMessage) returns (EchoMessage) {}
+  rpc Version(VersionMessage) returns (VersionMessage) {}
   rpc GetGroups(LightsRequest) returns (Groups) {}
   rpc GetSensors(SensorRequest) returns (Sensors) {}
   rpc SwitchOn(LightsRequest) returns (LightsResponse) {}
   rpc SwitchOff(LightsRequest) returns (LightsResponse) {}
   rpc Blink(LightsRequest) returns (LightsResponse) {}
+}
+
+message VersionMessage {
+  string version = 1;
+  string build = 2;
 }
 
 message EchoMessage {

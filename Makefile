@@ -26,7 +26,9 @@ docker-build:
 	docker build -t networld/homecontrol .
 
 docker-run:
-	docker run -v ~/.philips-hue.json:/root/.philips-hue.json -p 50051:50051 -it --rm networld/homecontrol /go/bin/server
+	docker run -v ~/.philips-hue.json:/root/.philips-hue.json \
+		-v ~/.homecontrol:/root/.homecontrol -p 50051:50051 \
+		-it --rm networld/homecontrol /go/bin/server -tls
 
 push:
 	docker build -t networld/homecontrol .

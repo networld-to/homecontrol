@@ -125,7 +125,10 @@ func main() {
 			log.Printf("Hue Light Sensor: %v", sensor.String())
 		}
 	case *cmd == "version":
-		log.WithField("version", version.Version).WithField("build", version.Build).Info("Version Information")
+		log.WithField("version", version.Version).WithField("build", version.Build).Info("Client Version")
+		resp, err := c.Version(context.Background(), &hue.VersionMessage{})
+		must(err)
+		log.WithField("version", resp.Version).WithField("build", resp.Build).Info("Server Version")
 	default:
 		resp := getGroups(c)
 		log.Printf("Hue Light Groups: %v", resp.Groups)
@@ -133,5 +136,4 @@ func main() {
 
 	end := time.Now()
 	log.WithField("exec_time", end.Sub(start)).Printf("Execution finished")
-
 }

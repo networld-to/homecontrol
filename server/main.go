@@ -43,6 +43,12 @@ func (s *server) Echo(ctx context.Context, in *hue.EchoMessage) (*hue.EchoMessag
 	return in, nil
 }
 
+func (s *server) Version(ctx context.Context, in *hue.VersionMessage) (*hue.VersionMessage, error) {
+	log.WithField("message", in).
+		WithField("call", "Version").Print("Incoming gRPC call")
+	return &hue.VersionMessage{Version: version.Version, Build: version.Build}, nil
+}
+
 func (s *server) GetSensors(ctx context.Context, in *hue.SensorRequest) (*hue.Sensors, error) {
 	start := time.Now()
 	ss := sensors.New(hueBridge.Bridge, hueBridge.Username)
