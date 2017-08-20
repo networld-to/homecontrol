@@ -1,8 +1,8 @@
-.PHONY: all build install tls clean hue docker
+.PHONY: all build install tls clean hue docker-build docker-run
 
-all: build tls install
+all: build tls install docker-build
 
-build: hue/hue.proto
+build:
 	protoc -I hue hue/hue.proto --go_out=plugins=grpc:hue
 	./build.sh
 
@@ -22,8 +22,10 @@ clean:
 	rm -rf */*.pb.go \
 		build/homecontrol* ${HOME}/.homecontrol
 
-docker:
+docker-build:
 	docker build -t networld/homecontrol .
+
+docker-run:
 	docker run -v ~/.philips-hue.json:/root/.philips-hue.json -p 50051:50051 -it --rm networld/homecontrol /go/bin/server
 
 push:

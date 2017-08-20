@@ -183,12 +183,14 @@ func main() {
 
 	opts := getServerOptions()
 	if *tls {
-		log.Info("Activating TLS encryption.")
 		cred, err := credentials.NewServerTLSFromFile(os.Getenv("HOME")+"/.homecontrol/server.crt", os.Getenv("HOME")+"/.homecontrol/server.key")
+		log.WithField("tls", true).Info("TLS Enabled")
 		if err != nil {
 			log.Fatalf("failed TLS: %v", err)
 		}
 		opts = append(opts, grpc.Creds(cred))
+	} else {
+		log.Warn("Insecure connection. No TLS")
 	}
 	s := grpc.NewServer(opts...)
 	hue.RegisterLightsServer(s, &server{})

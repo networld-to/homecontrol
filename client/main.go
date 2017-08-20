@@ -88,13 +88,18 @@ func main() {
 	start := time.Now()
 	opts := getDialOptions()
 	if *tls {
-		log.Info("Activating TLS encryption.")
 		cred, err := credentials.NewClientTLSFromFile(os.Getenv("HOME")+"/.homecontrol/server.crt", "Homecontrol")
+		info := cred.Info()
+		log.WithField("tls", true).
+			WithField("tls_version", info.ProtocolVersion).
+			WithField("tls_server_name", info.ServerName).
+			Info("TLS Enabled")
 		if err != nil {
 			log.Fatalf("failed TLS: %v", err)
 		}
 		opts = append(opts, grpc.WithTransportCredentials(cred))
 	} else {
+		log.Warn("Insecure connection. No TLS")
 		opts = append(opts, grpc.WithInsecure())
 	}
 	conn, err := grpc.Dial(*address, opts...)
