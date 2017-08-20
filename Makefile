@@ -4,6 +4,7 @@ all: build tls install docker-build
 
 build:
 	protoc -I hue hue/hue.proto --go_out=plugins=grpc:hue
+	protoc -I version version/version.proto --go_out=plugins=grpc:version
 	./build.sh
 
 install:
@@ -28,7 +29,7 @@ docker-build:
 docker-run:
 	docker run -v ~/.philips-hue.json:/root/.philips-hue.json \
 		-v ~/.homecontrol:/root/.homecontrol -p 50051:50051 \
-		-it --rm networld/homecontrol /go/bin/server -tls
+		-it --rm networld/homecontrol /go/bin/server -tls -endpoint=":50051"
 
 push:
 	docker build -t networld/homecontrol .

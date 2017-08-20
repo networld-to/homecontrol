@@ -105,32 +105,30 @@ func main() {
 	conn, err := grpc.Dial(*address, opts...)
 	must(err)
 	defer conn.Close()
-	c := hue.NewLightsClient(conn)
+
+	hue := hue.NewLightsClient(conn)
+	ver := version.NewVersionClient(conn)
 
 	log.WithField("address", *address).WithField("cmd", *cmd).WithField("group", *group).Info("Executing command")
-	switch {
-	case *cmd == "on":
-		switchOn(c, *group)
-	case *cmd == "off":
-		switchOff(c, *group)
-	case *cmd == "blink":
-		blink(c, *group)
-	case *cmd == "echo":
-		resp, err := c.Echo(context.Background(), &hue.EchoMessage{Msg: "Hello, world"})
-		must(err)
-		log.Info(resp.Msg)
-	case *cmd == "sensors":
-		resp := getSensors(c)
+	switch *cmd {
+	case "on":
+		switchOn(hue, *group)
+	case "off":
+		switchOff(hue, *group)
+	case "blink":
+		blink(hue, *group)
+	case "sensors":
+		resp := getSensors(hue)
 		for _, sensor := range resp.Sensors {
 			log.Printf("Hue Light Sensor: %v", sensor.String())
 		}
-	case *cmd == "version":
+	case "version":
 		log.WithField("version", version.Version).WithField("build", version.Build).Info("Client Version")
-		resp, err := c.Version(context.Background(), &hue.VersionMessage{})
+		resp, err := ver.Version(context.Background(), &version.VersionMessage{})
 		must(err)
 		log.WithField("version", resp.Version).WithField("build", resp.Build).Info("Server Version")
 	default:
-		resp := getGroups(c)
+		resp := getGroups(hue)
 		log.Printf("Hue Light Groups: %v", resp.Groups)
 	}
 

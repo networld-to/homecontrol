@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package version;
+
+service Version {
+  rpc Version(VersionMessage) returns (VersionMessage) {}
+}
+
+message VersionMessage {
+  string version = 1;
+  string build = 2;
+}
