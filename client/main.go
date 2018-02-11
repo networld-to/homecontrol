@@ -16,10 +16,11 @@ import (
 )
 
 var (
-	address = flag.String("host", "127.0.0.1:50051", "The gRPC service endpoint that will be contacted.")
-	cmd     = flag.String("cmd", "groups", "The command that will be executed.")
-	group   = flag.Int("group", 2, "The light group ID.")
-	tls     = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
+	address    = flag.String("host", "127.0.0.1:50051", "The gRPC service endpoint that will be contacted.")
+	cmd        = flag.String("cmd", "groups", "The command that will be executed.")
+	group      = flag.Int("group", 2, "The light group ID.")
+	tls        = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
+	brightness = flag.Float64("brightness", 0.66, "Light brightness in percentage. Value between 0 and 1.")
 )
 
 func must(err error) {
@@ -44,7 +45,7 @@ func getSensors(client hue.LightsClient) *hue.Sensors {
 
 func switchOn(client hue.LightsClient, group int) {
 	opts := getCallOptions()
-	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: 0.33}, opts...)
+	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: float32(*brightness)}, opts...)
 	must(err)
 	// log.Printf("Lights switched on: %v", r.Success)
 }
@@ -58,7 +59,7 @@ func switchOff(client hue.LightsClient, group int) {
 
 func blink(client hue.LightsClient, group int) {
 	opts := getCallOptions()
-	_, err := client.Blink(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: 0.33}, opts...)
+	_, err := client.Blink(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: float32(*brightness)}, opts...)
 	must(err)
 	// log.Printf("Lights switched on: %v", r.Success)
 }
