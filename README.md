@@ -9,9 +9,7 @@ they are in the same network or if the Philips Hub API is accessible.
 # Getting Started
 
     # Build server and client.
-    # Generate TLS certificates
     # Install server and client to ${GOPATH}/bin
-    # Build docker image with server and client included
     make all
 
     # Install server and client to ${GOPATH}/bin
@@ -31,7 +29,11 @@ they are in the same network or if the Philips Hub API is accessible.
     go run client/main.go -host 127.0.0.1:50051 -tls -cmd blink -group 2
 
     # Dockerized client example with service hosted under 192.168.1.2
-    docker run -it --rm networld/homecontrol /go/bin/client -host 192.168.1.2:50051 -cmd blink
+    docker run -it --rm networld/homecontrol /client -host 192.168.1.2:50051 -cmd blink
+
+    # Dockerized client example with service hosted under 192.168.1.2. TLS support
+    make tls
+    docker run -it --rm -v ~/.homecontrol:/root/.homecontrol networld/homecontrol /client -host 192.168.1.2:50051 -tls -cmd blink
 
 # Features
 

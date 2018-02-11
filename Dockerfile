@@ -29,8 +29,8 @@ FROM alpine:3.6
 
 RUN apk add --no-cache ca-certificates
 
-WORKDIR /go/bin
-COPY --from=builder /go/bin/ .
+WORKDIR /
+COPY --from=builder /go/bin/ /
 
 EXPOSE 50051
 

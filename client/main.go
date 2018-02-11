@@ -47,21 +47,18 @@ func switchOn(client hue.LightsClient, group int) {
 	opts := getCallOptions()
 	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: float32(*brightness)}, opts...)
 	must(err)
-	// log.Printf("Lights switched on: %v", r.Success)
 }
 
 func switchOff(client hue.LightsClient, group int) {
 	opts := getCallOptions()
 	_, err := client.SwitchOff(context.Background(), &hue.LightsRequest{Group: int32(group)}, opts...)
 	must(err)
-	// log.Printf("Lights switched off: %v", r.Success)
 }
 
 func blink(client hue.LightsClient, group int) {
 	opts := getCallOptions()
 	_, err := client.Blink(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: float32(*brightness)}, opts...)
 	must(err)
-	// log.Printf("Lights switched on: %v", r.Success)
 }
 
 func getCallOptions() []grpc.CallOption {
