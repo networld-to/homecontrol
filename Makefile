@@ -1,6 +1,6 @@
 .PHONY: all build install tls clean hue docker-build docker-run
 
-all: build tls install docker-build
+all: build install
 
 build:
 	protoc -I hue hue/hue.proto --go_out=plugins=grpc:hue

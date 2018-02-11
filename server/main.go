@@ -15,7 +15,7 @@ import (
 )
 
 var tls = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
-var endpoint = flag.String("endpoint", ":50051", "Host and port where the service is listening.s")
+var endpoint = flag.String("endpoint", ":50051", "Host and port where the service is listening.")
 
 func init() {
 	//log.SetFormatter(&log.JSONFormatter{})
