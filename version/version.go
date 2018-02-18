@@ -1,7 +1,7 @@
 package version
 
 import (
-	"golang.org/x/net/context"
+	"context"
 
 	log "github.com/sirupsen/logrus"
 )

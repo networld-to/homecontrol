@@ -1,5 +1,5 @@
 # Compiling application
-FROM golang:1.8.3-alpine as builder
+FROM golang:1.10-alpine as builder
 
 RUN apk update; apk add git; apk add gcc musl-dev curl
 RUN curl https://glide.sh/get | sh
@@ -25,7 +25,7 @@ RUN mv /tmp/server /go/bin && \
 #####################################################
 # Final, minimized docker image usable in production
 #####################################################
-FROM alpine:3.6
+FROM alpine:3.7
 
 RUN apk add --no-cache ca-certificates
 

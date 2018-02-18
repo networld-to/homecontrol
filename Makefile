@@ -20,7 +20,8 @@ tls:
 
 clean:
 	rm -rf */*.pb.go \
-		build/homecontrol* ${HOME}/.homecontrol
+		build/homecontrol*
+	@echo "Keeping ${HOME}/.homecontrol"
 
 docker-build:
 	docker build -t networld/homecontrol .
@@ -28,7 +29,7 @@ docker-build:
 docker-run:
 	docker run -v ~/.philips-hue.json:/root/.philips-hue.json \
 		-v ~/.homecontrol:/root/.homecontrol -p 50051:50051 \
-		-it --rm networld/homecontrol /go/bin/server -tls -endpoint=":50051"
+		-it --rm networld/homecontrol /server -tls -endpoint=":50051"
 
 push:
 	docker build -t networld/homecontrol .

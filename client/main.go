@@ -7,7 +7,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"golang.org/x/net/context"
+	"context"
 
 	"github.com/networld-to/homecontrol/hue"
 	"github.com/networld-to/homecontrol/version"

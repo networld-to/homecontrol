@@ -7,7 +7,7 @@ import (
 	"os/user"
 	"time"
 
-	"golang.org/x/net/context"
+	"context"
 
 	log "github.com/sirupsen/logrus"
 
