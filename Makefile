@@ -32,5 +32,5 @@ docker-run:
 		-it --rm networld/homecontrol /server -tls -endpoint=":50051"
 
 push:
-	docker build -t networld/homecontrol .
-	docker push networld/homecontrol
+	docker build -t $(USER)/homecontrol .
+	docker push $(USER)/homecontrol
