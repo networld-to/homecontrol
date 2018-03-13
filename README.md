@@ -18,7 +18,7 @@ they are in the same network or if the Philips Hub API is accessible.
     # Build and start docker image
     make docker-build docker-run
 
-    # Clean generate protobuf, binaries and TLS certificates
+    # Clean generate protobuf and binaries
     make clean
 
     # Start local server with TLS
