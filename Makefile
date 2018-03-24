@@ -24,7 +24,7 @@ clean:
 	@echo "Keeping ${HOME}/.homecontrol"
 
 docker-build:
-	docker build -t networld/homecontrol .
+	docker build -t $(USER)/homecontrol .
 
 docker-run:
 	docker run -v ~/.philips-hue.json:/root/.philips-hue.json \

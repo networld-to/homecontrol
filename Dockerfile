@@ -30,7 +30,8 @@ FROM alpine:3.7
 RUN apk add --no-cache ca-certificates
 
 WORKDIR /
-COPY --from=builder /go/bin/ /
+COPY --from=builder /go/bin/server /
+COPY --from=builder /go/bin/client /
 
 EXPOSE 50051
 
