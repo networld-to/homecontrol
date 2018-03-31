@@ -1,26 +1,51 @@
 hash: 402a921a3007fafa3d7e5e2c2a3bb8f0db12598528416b410bbe0969a885991d
-updated: 2017-08-18T22:17:12.036355703-04:00
+updated: 2018-03-31T15:31:26.061801347-04:00
 imports:
-- name: github.com/golang/protobuf
-  version: ab9f9a6dab164b7d1246e0e688b0ab7b94d8553e
+- name: github.com/barnybug/go-cast
+  version: 3896d2c05eb1917a4d0356a014b8823ea0244d8b
+  subpackages:
+  - api
+  - controllers
+  - events
+  - log
+  - net
+- name: github.com/evalphobia/google-home-client-go
+  version: 33eef84c4e0d6ae48c2ab277885edb29e120242a
+  subpackages:
+  - googlehome
+- name: github.com/evalphobia/google-tts-go
+  version: f9ec2ea40e64300b0efd106cfa9b271a113f6a38
+  subpackages:
+  - googletts
+- name: github.com/gogo/protobuf
+  version: 1ef32a8b9fc3f8ec940126907cedb5998f6318e4
   subpackages:
   - proto
-  - protoc-gen-go/descriptor
+- name: github.com/golang/protobuf
+  version: e09c5db296004fbe3f74490e84dcd62c3c5ddb1b
+  subpackages:
+  - proto
+  - ptypes
   - ptypes/any
+  - ptypes/duration
+  - ptypes/timestamp
 - name: github.com/heatxsink/go-hue
   version: 077c5fe843490c62dfd36c7eee473f314dc5d605
   subpackages:
   - groups
   - hue
   - lights
+  - sensors
+- name: github.com/kunihiko-t/google-home-notifier-go
+  version: 686addab0d22b9958ac69460018901e8d1a3033e
 - name: github.com/sirupsen/logrus
-  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+  version: c155da19408a8799da419ed3eeb0cb5db0ad5dbc
 - name: golang.org/x/crypto
-  version: eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035
+  version: 12892e8c234f4fe6f6803f052061de9057903bb2
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: 1c05540f6879653db88113bc4a2b70aec4bd491f
+  version: b68f30494add4df6bd8ef5e82803f308e7f7c59c
   subpackages:
   - context
   - http2
@@ -30,28 +55,33 @@ imports:
   - lex/httplex
   - trace
 - name: golang.org/x/sys
-  version: 43e60d72a8e2bd92ee98319ba9a384a0e9837c08
+  version: 378d26f46672a356c46195c28f61bdb4c0a781dd
   subpackages:
   - unix
   - windows
 - name: golang.org/x/text
-  version: e56139fd9c5bc7244c76116c68e500765bb6db6b
+  version: ece95c760240037f89ebcbdd7155ac8cb52e38fa
   subpackages:
   - secure/bidirule
   - transform
   - unicode/bidi
   - unicode/norm
 - name: google.golang.org/genproto
-  version: ee236bd376b077c7a89f260c026c4735b195e459
+  version: ab0870e398d5dd054b868c0db1481ab029b9a9f2
   subpackages:
   - googleapis/rpc/status
 - name: google.golang.org/grpc
-  version: b3ddf786825de56a4178401b7e174ee332173b66
+  version: 1e2570b1b19ade82d8dbb31bba4e65e9f9ef5b34
   subpackages:
+  - balancer
+  - balancer/base
+  - balancer/roundrobin
   - codes
   - connectivity
   - credentials
-  - grpclb/grpc_lb_v1
+  - encoding
+  - encoding/proto
+  - grpclb/grpc_lb_v1/messages
   - grpclog
   - internal
   - keepalive
@@ -59,7 +89,9 @@ imports:
   - naming
   - peer
   - reflection
-  - reflection/grpc_reflection_v1alpha
+  - resolver
+  - resolver/dns
+  - resolver/passthrough
   - stats
   - status
   - tap
