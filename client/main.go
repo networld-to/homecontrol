@@ -136,7 +136,14 @@ func main() {
 		log.WithField("version", resp.Version).WithField("build", resp.Build).Info("Server Version")
 	default:
 		resp := getGroups(hue)
-		log.Printf("Hue Light Groups: %v", resp.Groups)
+		for _, group := range resp.Groups {
+			if group.On {
+				fmt.Print("[ON ] ")
+			} else {
+				fmt.Print("[OFF] ")
+			}
+			fmt.Printf("%v\n", group)
+		}
 	}
 
 	end := time.Now()
