@@ -18,14 +18,12 @@ help: ## Shows this help
 			printf "%s\n" $$help_info; \
 		done
 
-all: install      ## Triggers `install` directive
-
 build:						## Generates protobuf code and builds the server and client
 	protoc -I hue hue/hue.proto --go_out=plugins=grpc:hue
 	protoc -I version version/version.proto --go_out=plugins=grpc:version
 	./build.sh
 
-install: build
+install: build		## Builds and installs a new version
 	cp build/homecontrol_server ${GOPATH}/bin
 	cp build/homecontrol_client ${GOPATH}/bin
 
