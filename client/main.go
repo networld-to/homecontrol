@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -118,7 +119,15 @@ func main() {
 	case "sensors":
 		resp := getSensors(hue)
 		for _, sensor := range resp.Sensors {
-			log.Printf("Hue Light Sensor: %v", sensor.String())
+			fmt.Printf("Name             : %s\n", sensor.GetName())
+			fmt.Printf("ID               : %d\n", sensor.GetID())
+			fmt.Printf("UniqueID         : %s\n", sensor.GetUniqueID())
+			fmt.Printf("Type             : %s\n", sensor.GetType())
+			fmt.Printf("State            : %v\n", sensor.GetState())
+			fmt.Printf("Manufacturer Name: %s\n", sensor.GetManufacturerName())
+			fmt.Printf("Model ID         : %s\n", sensor.GetModelID())
+			fmt.Printf("Software Version : %s\n", sensor.GetSWVersion())
+			fmt.Println()
 		}
 	case "version":
 		log.WithField("version", version.Version).WithField("build", version.Build).Info("Client Version")
