@@ -47,7 +47,7 @@ docker-build:    ## Builds a docker image with the client and server inside
 docker-run:      ## Runs the docker image and mounts all necessary config files from the host
 	docker run -v ~/.philips-hue.json:/root/.philips-hue.json \
 		-v ~/.homecontrol:/root/.homecontrol -p 50051:50051 \
-		-it --rm networld/homecontrol /server -tls -endpoint=":50051"
+		-it --rm $(USER)/homecontrol /server -tls -endpoint=":50051"
 
 push: docker-build ## Builds a docker image and pushes it to hub.docker.com/$(USER)/homecontrol
 	docker push $(USER)/homecontrol
