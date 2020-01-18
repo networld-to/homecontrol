@@ -18,6 +18,6 @@ vendor/
 # Generated TLS Certificates
 tls/server*
 
-**/*.pb.go
+# **/*.pb.go
 
 sandbox

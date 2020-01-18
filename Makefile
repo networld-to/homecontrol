@@ -35,8 +35,8 @@ tls:              ## Generates TLS certificates for the server, under ~/.homecon
 		-subj "/C=US/ST=MA/L=Cambridge/O=Networld/CN=Homecontrol/emailAddress=foo@bar.com"
 
 clean:          ## Removes generated protobuffer code and binaries. Keeps ~/.homecontrol
-	rm -rf */*.pb.go \
-		build/homecontrol*
+	# rm -rf */*.pb.gg
+	rm -rf build/homecontrol*
 	@echo "Keeping ${HOME}/.homecontrol"
 
 docker-build:    ## Builds a docker image with the client and server inside
