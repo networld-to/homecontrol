@@ -43,7 +43,8 @@ docker-build:    ## Builds a docker image with the client and server inside
 	docker build --compress --rm -t $(USER)/homecontrol .
 
 docker-run:      ## Runs the docker image and mounts all necessary config files from the host
-	docker run -v ~/.philips-hue.json:/root/.philips-hue.json \
+	docker run --name homecontrol \
+		-v ~/.philips-hue.json:/root/.philips-hue.json \
 		-v ~/.homecontrol:/root/.homecontrol -p 50051:50051 \
 		-it --rm $(USER)/homecontrol /server -tls -endpoint=":50051"
 

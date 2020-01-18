@@ -1,5 +1,5 @@
 # Compiling application
-FROM golang:1.10-alpine as builder
+FROM golang:1.13-alpine as builder
 
 ENV DEP_VERSION v0.4.1
 RUN apk update; apk add git; apk add gcc musl-dev curl
@@ -11,8 +11,6 @@ ENV CGO_ENABLED 1
 
 WORKDIR ${PROJ_DIR}
 COPY . .
-
-RUN dep ensure -vendor-only
 
 RUN go build -o /tmp/server -buildmode=pie \
 -ldflags "-s -w -X ${PROJ}/version.Version=$(git describe --dirty --always) -X '${PROJ}/version.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" server/main.go
@@ -26,7 +24,7 @@ RUN mv /tmp/server /go/bin && \
 #####################################################
 # Final, minimized docker image usable in production
 #####################################################
-FROM alpine:3.7
+FROM alpine:3.11
 
 RUN apk add --no-cache ca-certificates
 
