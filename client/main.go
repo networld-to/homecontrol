@@ -73,7 +73,6 @@ func getCallOptions() []grpc.CallOption {
 
 func getDialOptions() []grpc.DialOption {
 	opts := []grpc.DialOption{
-		// grpc.WithInsecure(),
 		grpc.WithTimeout(10 * time.Second),
 		grpc.WithBlock(),
 		grpc.WithBackoffMaxDelay(1 * time.Second),
@@ -90,7 +89,7 @@ func main() {
 		cred, err := credentials.NewClientTLSFromFile(os.Getenv("HOME")+"/.homecontrol/server.crt", "Homecontrol")
 		info := cred.Info()
 		log.WithField("tls", true).
-			WithField("tls_version", info.ProtocolVersion).
+			WithField("tls_version", info.SecurityVersion).
 			WithField("tls_server_name", info.ServerName).
 			Info("TLS Enabled")
 		if err != nil {

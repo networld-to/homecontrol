@@ -46,7 +46,6 @@ func getServerOptions(tls bool) []grpc.ServerOption {
 }
 
 func main() {
-	hue.LoadHueBridgeConfig()
 	flag.Parse()
 
 	lis, err := net.Listen("tcp", *endpoint)
@@ -56,6 +55,7 @@ func main() {
 
 	opts := getServerOptions(*tls)
 	s := grpc.NewServer(opts...)
+	hue.LoadHueBridgeConfig()
 	hue.RegisterLightsServer(s, hue.Server{})
 	version.RegisterVersionServer(s, version.Server{})
 
