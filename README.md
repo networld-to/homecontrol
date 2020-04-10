@@ -1,5 +1,7 @@
 # Introduction
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/networld-to/homecontrol)](https://goreportcard.com/report/github.com/networld-to/homecontrol)
+
 Collection of different IoT services implemented in golang with the help of
 gRPC and Protobuf.
 
