@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package hue;
+option go_package = ".;hue";
 
 service Lights {
   rpc GetGroups(LightsRequest) returns (Groups) {}

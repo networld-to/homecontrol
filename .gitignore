@@ -3,7 +3,8 @@
 *.dll
 *.so
 *.dylib
-build/homecontrol*
+server/server
+client/client
 
 # Test binary, build with `go test -c`
 *.test

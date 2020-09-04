@@ -12,6 +12,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
 )
 
 var tls = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
@@ -60,7 +61,7 @@ func main() {
 	version.RegisterVersionServer(s, version.Server{})
 
 	// Register reflection service on gRPC server.
-	// reflection.Register(s)
+	reflection.Register(s)
 
 	log.WithField("endpoint", *endpoint).WithField("type", "grpc").
 		WithField("version", version.Version).WithField("build", version.Build).Infof("Server started")

@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package version;
+option go_package = ".;version";
 
 service Version {
   rpc Version(VersionMessage) returns (VersionMessage) {}

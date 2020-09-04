@@ -1,85 +1,74 @@
-#-------------------------------------------------------------------------------------------------------------
-# Copyright (c) Microsoft Corporation. All rights reserved.
-# Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
-#-------------------------------------------------------------------------------------------------------------
+# Update the VARIANT arg in devcontainer.json to pick an Go version
+ARG VARIANT=1
+FROM golang:${VARIANT}
 
-FROM golang:1
-
-# Avoid warnings by switching to noninteractive
-ENV DEBIAN_FRONTEND=noninteractive
-
-# This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
-# property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
-# will be updated to match your local UID/GID (when using the dockerFile property).
-# See https://aka.ms/vscode-remote/containers/non-root-user for details.
+# Options for setup script
+ARG INSTALL_ZSH="true"
+ARG UPGRADE_PACKAGES="false"
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG PROTOC_VERSION=3.13.0
 
-# Configure apt, install packages and tools
+# Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
+COPY library-scripts/*.sh /tmp/library-scripts/
 RUN apt-get update \
-    && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
-    #
-    # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
-    && apt-get -y install git iproute2 procps lsb-release \
-    #
-    # Install protoc compiler
-    && apt-get -y install protobuf-compiler \
-    #
-    # Install Go tools w/module support
-    && mkdir -p /tmp/gotools \
+    && /bin/bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
+    && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
+
+# Install Go tools
+ARG GO_TOOLS_WITH_MODULES="\
+    golang.org/x/tools/gopls \
+    honnef.co/go/tools/... \
+    golang.org/x/tools/cmd/gorename \
+    golang.org/x/tools/cmd/goimports \
+    golang.org/x/tools/cmd/guru \
+    golang.org/x/lint/golint \
+    github.com/mdempsky/gocode \
+    github.com/cweill/gotests/... \
+    github.com/haya14busa/goplay/cmd/goplay \
+    github.com/sqs/goreturns \
+    github.com/josharian/impl \
+    github.com/davidrjenni/reftools/cmd/fillstruct \
+    github.com/uudashr/gopkgs/v2/cmd/gopkgs \
+    github.com/ramya-rao-a/go-outline \
+    github.com/acroca/go-symbols \
+    github.com/godoctor/godoctor \
+    github.com/rogpeppe/godef \
+    github.com/zmb3/gogetdoc \
+    github.com/fatih/gomodifytags \
+    github.com/mgechev/revive \
+    github.com/go-delve/delve/cmd/dlv"
+RUN mkdir -p /tmp/gotools \
     && cd /tmp/gotools \
-    && GO111MODULE=on go get -v golang.org/x/tools/gopls@latest 2>&1 \
-    && GO111MODULE=on go get -v \
-        honnef.co/go/tools/...@latest \
-        golang.org/x/tools/cmd/gorename@latest \
-        golang.org/x/tools/cmd/goimports@latest \
-        golang.org/x/tools/cmd/guru@latest \
-        golang.org/x/lint/golint@latest \
-        github.com/mdempsky/gocode@latest \
-        github.com/cweill/gotests/...@latest \
-        github.com/haya14busa/goplay/cmd/goplay@latest \
-        github.com/sqs/goreturns@latest \
-        github.com/josharian/impl@latest \
-        github.com/davidrjenni/reftools/cmd/fillstruct@latest \
-        github.com/uudashr/gopkgs/cmd/gopkgs@latest  \
-        github.com/ramya-rao-a/go-outline@latest  \
-        github.com/acroca/go-symbols@latest  \
-        github.com/godoctor/godoctor@latest  \
-        github.com/rogpeppe/godef@latest  \
-        github.com/zmb3/gogetdoc@latest \
-        github.com/fatih/gomodifytags@latest  \
-        github.com/mgechev/revive@latest  \
-        github.com/go-delve/delve/cmd/dlv@latest 2>&1 \
-    #
-    # Install Go tools w/o module support
-    && go get -v github.com/alecthomas/gometalinter 2>&1 \
-    #
-    && GO111MODULE=on go get -v github.com/golang/protobuf/protoc-gen-go 2>&1 \
-    #
-    # Install gocode-gomod
+    && export GOPATH=/tmp/gotools \
+    # Go tools w/module support
+    && export GO111MODULE=on \
+    && (echo "${GO_TOOLS_WITH_MODULES}" | xargs -n 1 go get -x )2>&1 \
+    # gocode-gomod
+    && export GO111MODULE=auto \
     && go get -x -d github.com/stamblerre/gocode 2>&1 \
     && go build -o gocode-gomod github.com/stamblerre/gocode \
-    && mv gocode-gomod $GOPATH/bin/ \
-    #
-    # Install golangci-lint
-    && curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin 2>&1 \
-    #
-    # Create a non-root user to use if preferred - see https://aka.ms/vscode-remote/containers/non-root-user.
-    && groupadd --gid $USER_GID $USERNAME \
-    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    # [Optional] Add sudo support
-    && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME \
-    #
-    # Clean up
-    && apt-get autoremove -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/* /go/src /tmp/gotools
+    # golangci-lint
+    && curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/bin 2>&1 \
+    # Move Go tools into path and clean up
+    && mv /tmp/gotools/bin/* /usr/local/bin/ \
+    && mv gocode-gomod /usr/local/bin/ \
+    && rm -rf /tmp/gotools
 
-# Update this to "on" or "off" as appropriate
-ENV GO111MODULE=on
+ENV PROTOBUF_URL https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
+RUN curl -L -o /tmp/protobuf.zip $PROTOBUF_URL
+WORKDIR /tmp/
+RUN unzip protobuf.zip && mv bin/protoc /usr/local/bin
 
-# Switch back to dialog for any ad-hoc use of apt-get
-ENV DEBIAN_FRONTEND=dialog
+RUN go get -u github.com/golang/protobuf/protoc-gen-go
+
+ENV GO111MODULE=auto
+WORKDIR /workspace
+
+# [Optional] Uncomment the next line to use go get to install anything else you need
+# RUN go get -x <your-dependency-or-tool>
+
+# [Optional] Uncomment this section to install additional OS packages.
+# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+#     && apt-get -y install --no-install-recommends <your-package-list-here>

@@ -115,7 +115,12 @@ func (s Server) SwitchOn(ctx context.Context, in *LightsRequest) (*LightsRespons
 		return nil, err
 	}
 	brightness := uint8(255 * in.GetBrightnessPercent())
-	gg.SetGroupState(g.ID, lights.State{On: true, Bri: brightness})
+	gg.SetGroupState(g.ID, lights.State{
+		On:  true,
+		Bri: brightness,
+		Sat: 254,
+		Hue: 10000,
+	})
 	return &LightsResponse{Success: true}, nil
 }
 

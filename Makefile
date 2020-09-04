@@ -18,14 +18,28 @@ help: ## Shows this help
 			printf "%s\n" $$help_info; \
 		done
 
-build:						## Generates protobuf code and builds the server and client
+
+build-server:		## Build the server
+	go build -v -o server/server server/main.go
+
+build-client:   ## Build the client
+	go build -v -o client/client client/main.go
+
+protoc:						## Generates protobuf code
 	protoc -I hue hue/hue.proto --go_out=plugins=grpc:hue
 	protoc -I version version/version.proto --go_out=plugins=grpc:version
-	./build.sh
+
+build: protoc build-server build-client # Generates the protobuf code and buils the server and client
 
 install: build		## Builds and installs a new version
 	cp build/homecontrol_server ${GOPATH}/bin
 	cp build/homecontrol_client ${GOPATH}/bin
+
+run: build      ## Executes first make build and then ./server/server
+	./server/server -endpoint="127.0.0.1:50051"
+
+run-client: 	## Executes ./client/client with ./config.yaml (needed for TLS)
+	@./client/client
 
 tls:              ## Generates TLS certificates for the server, under ~/.homecontrol
 	mkdir -p ${HOME}/.homecontrol
@@ -35,15 +49,15 @@ tls:              ## Generates TLS certificates for the server, under ~/.homecon
 		-subj "/C=US/ST=MA/L=Cambridge/O=Networld/CN=Homecontrol/emailAddress=foo@bar.com"
 
 clean:          ## Removes generated protobuffer code and binaries. Keeps ~/.homecontrol
-	# rm -rf */*.pb.gg
-	rm -rf build/homecontrol*
+	rm -f */*.pb.go
+	rm -f server/server client/client
 	@echo "Keeping ${HOME}/.homecontrol"
 
 docker-build:    ## Builds a docker image with the client and server inside
 	docker build --compress --rm -t $(USER)/homecontrol .
 
 docker-run:      ## Runs the docker image and mounts all necessary config files from the host
-	docker run --name homecontrol \
+	docker run --name homecontrol-inst \
 		-v ~/.philips-hue.json:/root/.philips-hue.json \
 		-v ~/.homecontrol:/root/.homecontrol -p 50051:50051 \
 		-it --rm $(USER)/homecontrol /server -tls -endpoint=":50051"
