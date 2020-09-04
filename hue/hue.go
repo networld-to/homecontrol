@@ -115,9 +115,15 @@ func (s Server) SwitchOn(ctx context.Context, in *LightsRequest) (*LightsRespons
 		return nil, err
 	}
 	brightness := uint8(255 * in.GetBrightnessPercent())
+
+	saturation := uint8(254 * in.GetSaturationPercent()) // 254 is the most saturated color, 0 is the least saturated color (white)
+	hue := uint16(in.GetHue())                           // Value between 0 and 65535 with Red=5535 and Green=25500 and Blue=46920
+
 	gg.SetGroupState(g.ID, lights.State{
 		On:  true,
 		Bri: brightness,
+		Sat: saturation,
+		Hue: hue,
 	})
 	return &LightsResponse{Success: true}, nil
 }

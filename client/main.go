@@ -22,6 +22,8 @@ var (
 	group      = flag.Int("group", 2, "The light group ID.")
 	tls        = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
 	brightness = flag.Float64("brightness", 0.66, "Light brightness in percentage. Value between 0 and 1.")
+	saturation = flag.Float64("sat", 0, "Light saturation in percentage. Value between 0 and 1.")
+	hueValue   = flag.Float64("hue", 0, " Value between 0 and 65535 with Red=5535 and Green=25500 and Blue=46920")
 )
 
 func must(err error) {
@@ -46,7 +48,12 @@ func getSensors(client hue.LightsClient) *hue.Sensors {
 
 func switchOn(client hue.LightsClient, group int) {
 	opts := getCallOptions()
-	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{Group: int32(group), BrightnessPercent: float32(*brightness)}, opts...)
+	_, err := client.SwitchOn(context.Background(), &hue.LightsRequest{
+		Group:             int32(group),
+		BrightnessPercent: float32(*brightness),
+		SaturationPercent: float32(*saturation),
+		Hue:               float32(*hueValue),
+	}, opts...)
 	must(err)
 }
 

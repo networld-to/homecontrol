@@ -39,6 +39,14 @@ they are in the same network or if the Philips Hub API is accessible.
     docker run -it --rm --name homecontrol -v ~/.homecontrol:/root/.homecontrol networld/homecontrol /client -host 192.168.1.2:50051 -tls -cmd blink
     docker exec -it homecontrol /client -tls
 
+# Examples: Client
+
+    # Change the lights in group 3 to GREEN
+    $ ./client/client -group 3 -cmd on -brightness 1 -sat 1 -hue 25500
+
+    # Change the lights in group 3 to RED
+    $ ./client/client -group 3 -cmd on -brightness 1 -sat 1 -hue 65535
+
 # Features
 
 * TLS encrypted connections

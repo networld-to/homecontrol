@@ -15,6 +15,13 @@ message LightsRequest {
   int32 Group = 1;
   // Value between 0 and 1
   float BrightnessPercent = 2;
+  // Value between 0 and 1
+  float SaturationPercent = 3;
+  // Value between 0 and 65535
+  // Red: 65535
+  // Green: 25500
+  // Blue: 46920
+  float Hue = 4;
 }
 
 message LightsResponse {
