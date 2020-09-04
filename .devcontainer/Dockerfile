@@ -60,11 +60,12 @@ ENV PROTOBUF_URL https://github.com/google/protobuf/releases/download/v${PROTOC_
 RUN curl -L -o /tmp/protobuf.zip $PROTOBUF_URL
 WORKDIR /tmp/
 RUN unzip protobuf.zip && mv bin/protoc /usr/local/bin
+RUN chmod 777 /usr/local/bin/*
 
 RUN go get -u github.com/golang/protobuf/protoc-gen-go
 
 ENV GO111MODULE=auto
-WORKDIR /workspace
+WORKDIR /workspaces
 
 # [Optional] Uncomment the next line to use go get to install anything else you need
 # RUN go get -x <your-dependency-or-tool>
