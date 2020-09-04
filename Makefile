@@ -31,6 +31,8 @@ protoc:						## Generates protobuf code
 
 build: protoc build-server build-client # Generates the protobuf code and buils the server and client
 
+build-only: build-server build-client 	# Compiles the server and the client without generating new version of the protobuf code
+
 install: build		## Builds and installs a new version
 	cp build/homecontrol_server ${GOPATH}/bin
 	cp build/homecontrol_client ${GOPATH}/bin
