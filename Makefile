@@ -48,7 +48,8 @@ tls:              ## Generates TLS certificates for the server, under ~/.homecon
 	openssl genrsa -out ${HOME}/.homecontrol/server.key 4096
 	openssl req -new -x509 -sha256 -key ${HOME}/.homecontrol/server.key \
 		-out ${HOME}/.homecontrol/server.crt -days 3650 \
-		-subj "/C=US/ST=MA/L=Cambridge/O=Networld/CN=Homecontrol/emailAddress=foo@bar.com"
+		-subj "/C=US/ST=MA/L=Cambridge/O=Networld/CN=Homecontrol/emailAddress=foo@bar.com" \
+		-addext "subjectAltName=IP:0.0.0.0,IP:127.0.0.1,IP:192.168.1.2"
 
 clean:          ## Removes generated protobuffer code and binaries. Keeps ~/.homecontrol
 	rm -f */*.pb.go

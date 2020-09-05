@@ -1,8 +1,11 @@
 package main
 
 import (
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -20,7 +23,7 @@ var (
 	address    = flag.String("host", "127.0.0.1:50051", "The gRPC service endpoint that will be contacted.")
 	cmd        = flag.String("cmd", "groups", "The command that will be executed.")
 	group      = flag.Int("group", 2, "The light group ID.")
-	tls        = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
+	tlsFlag    = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
 	brightness = flag.Float64("brightness", 0.66, "Light brightness in percentage. Value between 0 and 1.")
 	saturation = flag.Float64("sat", 0, "Light saturation in percentage. Value between 0 and 1.")
 	hueValue   = flag.Float64("hue", 0, " Value between 0 and 65535 with Red=5535 and Green=25500 and Blue=46920")
@@ -71,18 +74,18 @@ func blink(client hue.LightsClient, group int) {
 
 func getCallOptions() []grpc.CallOption {
 	opts := []grpc.CallOption{
-		grpc.FailFast(true),
-		grpc.MaxCallSendMsgSize(1024),
-		grpc.MaxCallRecvMsgSize(5120),
+		// grpc.FailFast(true),
+		// grpc.MaxCallSendMsgSize(1024),
+		// grpc.MaxCallRecvMsgSize(5120),
 	}
 	return opts
 }
 
 func getDialOptions() []grpc.DialOption {
 	opts := []grpc.DialOption{
-		grpc.WithTimeout(10 * time.Second),
-		grpc.WithBlock(),
-		grpc.WithBackoffMaxDelay(1 * time.Second),
+		// grpc.WithTimeout(10 * time.Second),
+		// grpc.WithBlock(),
+		// grpc.WithBackoffMaxDelay(1 * time.Second),
 	}
 	return opts
 }
@@ -92,8 +95,20 @@ func main() {
 
 	start := time.Now()
 	opts := getDialOptions()
-	if *tls {
-		cred, err := credentials.NewClientTLSFromFile(os.Getenv("HOME")+"/.homecontrol/server.crt", "Homecontrol")
+	if *tlsFlag {
+		certPool := x509.NewCertPool()
+		bs, err := ioutil.ReadFile(os.Getenv("HOME") + "/.homecontrol/server.crt")
+		if err != nil {
+			log.Fatalf("failed to read ca cert: %s", err)
+		}
+
+		ok := certPool.AppendCertsFromPEM(bs)
+		if !ok {
+			log.Fatal("failed to append certs")
+		}
+		cred := credentials.NewTLS(&tls.Config{
+			RootCAs: certPool,
+		})
 		info := cred.Info()
 		log.WithField("tls", true).
 			WithField("tls_version", info.SecurityVersion).
