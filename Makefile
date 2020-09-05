@@ -34,8 +34,8 @@ build: protoc build-server build-client # Generates the protobuf code and buils 
 build-only: build-server build-client 	# Compiles the server and the client without generating new version of the protobuf code
 
 install: build		## Builds and installs a new version
-	cp build/homecontrol_server ${GOPATH}/bin
-	cp build/homecontrol_client ${GOPATH}/bin
+	cp server/server ${GOPATH}/bin/homecontrol_server
+	cp client/client ${GOPATH}/bin/homecontrol_client
 
 run: build      ## Executes first make build and then ./server/server
 	./server/server -endpoint="127.0.0.1:50051"
