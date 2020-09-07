@@ -50,7 +50,7 @@ func LoadHueBridgeConfig() Bridge {
  */
 
 // GetSensors : Returns all known sensors
-func (s Server) GetSensors(ctx context.Context, in *SensorRequest) (*Sensors, error) {
+func (s Server) GetSensors(ctx context.Context, in *Empty) (*Sensors, error) {
 	start := time.Now()
 	ss := sensors.New(hueBridge.Bridge, hueBridge.Username)
 	allSensors, err := ss.GetAllSensors()
@@ -87,7 +87,7 @@ func (s Server) GetSensors(ctx context.Context, in *SensorRequest) (*Sensors, er
 }
 
 // GetGroups implements hue.Lights : Returns group of lights.
-func (s Server) GetGroups(ctx context.Context, in *LightsRequest) (*Groups, error) {
+func (s Server) GetGroups(ctx context.Context, in *Empty) (*Groups, error) {
 	start := time.Now()
 	gg := groups.New(hueBridge.Bridge, hueBridge.Username)
 	allGroups, err := gg.GetAllGroups()

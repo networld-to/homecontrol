@@ -37,14 +37,14 @@ func must(err error) {
 
 func getGroups(client hue.LightsClient) *hue.Groups {
 	opts := getCallOptions()
-	resp, err := client.GetGroups(context.Background(), &hue.LightsRequest{}, opts...)
+	resp, err := client.GetGroups(context.Background(), &hue.Empty{}, opts...)
 	must(err)
 	return resp
 }
 
 func getSensors(client hue.LightsClient) *hue.Sensors {
 	opts := getCallOptions()
-	resp, err := client.GetSensors(context.Background(), &hue.SensorRequest{}, opts...)
+	resp, err := client.GetSensors(context.Background(), &hue.Empty{}, opts...)
 	must(err)
 	return resp
 }

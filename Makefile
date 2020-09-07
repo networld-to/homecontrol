@@ -38,7 +38,7 @@ install: build		## Builds and installs a new version
 	cp client/client ${GOPATH}/bin/homecontrol_client
 
 run: build      ## Executes first make build and then ./server/server
-	./server/server -endpoint="127.0.0.1:50051"
+	./server/server -endpoint=":50051"
 
 run-client: 	## Executes ./client/client with ./config.yaml (needed for TLS)
 	@./client/client

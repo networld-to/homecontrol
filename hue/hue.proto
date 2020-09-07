@@ -4,11 +4,14 @@ package hue;
 option go_package = ".;hue";
 
 service Lights {
-  rpc GetGroups(LightsRequest) returns (Groups) {}
-  rpc GetSensors(SensorRequest) returns (Sensors) {}
+  rpc GetGroups(Empty) returns (Groups) {}
+  rpc GetSensors(Empty) returns (Sensors) {}
   rpc SwitchOn(LightsRequest) returns (LightsResponse) {}
   rpc SwitchOff(LightsRequest) returns (LightsResponse) {}
   rpc Blink(LightsRequest) returns (LightsResponse) {}
+}
+
+message Empty {
 }
 
 message LightsRequest {
