@@ -1,6 +1,6 @@
 # Introduction
 
-![Go](https://github.com/networld-to/homecontrol/workflows/Go/badge.svg)
+[![Go](https://github.com/networld-to/homecontrol/workflows/Go/badge.svg)](https://github.com/networld-to/homecontrol/actions?query=workflow%3AGo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/networld-to/homecontrol)](https://goreportcard.com/report/github.com/networld-to/homecontrol)
 
 Collection of different IoT services implemented in golang with the help of
