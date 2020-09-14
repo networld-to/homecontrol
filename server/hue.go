@@ -1,4 +1,4 @@
-package hue
+package main
 
 import (
 	"encoding/json"
@@ -11,13 +11,15 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	hue "github.com/networld-to/homecontrol/api/generated/hue"
+
 	"github.com/heatxsink/go-hue/groups"
 	"github.com/heatxsink/go-hue/lights"
 	"github.com/heatxsink/go-hue/sensors"
 )
 
-// Server : The implementation of the Philips Hue gRPC service
-type Server struct{}
+// HueServer : The implementation of the Philips Hue gRPC service
+type HueServer struct{}
 
 // Bridge : Connection and authentication information related to the Philips Hue Bridge
 type Bridge struct {
@@ -50,7 +52,7 @@ func LoadHueBridgeConfig() Bridge {
  */
 
 // GetSensors : Returns all known sensors
-func (s Server) GetSensors(ctx context.Context, in *Empty) (*Sensors, error) {
+func (s HueServer) GetSensors(ctx context.Context, in *hue.Empty) (*hue.Sensors, error) {
 	start := time.Now()
 	ss := sensors.New(hueBridge.Bridge, hueBridge.Username)
 	allSensors, err := ss.GetAllSensors()
@@ -60,10 +62,10 @@ func (s Server) GetSensors(ctx context.Context, in *Empty) (*Sensors, error) {
 	log.WithField("bridge_exec_time", time.Since(start)).
 		WithField("call", "GetSensors").Print("Incoming gRPC call")
 
-	sensorsResp := &Sensors{}
-	sensorsResp.Sensors = make([]*Sensor, len(allSensors))
+	sensorsResp := &hue.Sensors{}
+	sensorsResp.Sensors = make([]*hue.Sensor, len(allSensors))
 	for i, s := range allSensors {
-		sensorsResp.Sensors[i] = &Sensor{
+		sensorsResp.Sensors[i] = &hue.Sensor{
 			ID:               int32(s.ID),
 			UniqueID:         s.UniqueID,
 			Name:             s.Name,
@@ -71,7 +73,7 @@ func (s Server) GetSensors(ctx context.Context, in *Empty) (*Sensors, error) {
 			ModelID:          s.ModelID,
 			SWVersion:        s.SWVersion,
 			ManufacturerName: s.ManufacturerName,
-			State: &State{
+			State: &hue.State{
 				ButtonEvent: int32(s.State.ButtonEvent),
 				Dark:        s.State.Dark,
 				Daylight:    s.State.Daylight,
@@ -87,7 +89,7 @@ func (s Server) GetSensors(ctx context.Context, in *Empty) (*Sensors, error) {
 }
 
 // GetGroups implements hue.Lights : Returns group of lights.
-func (s Server) GetGroups(ctx context.Context, in *Empty) (*Groups, error) {
+func (s HueServer) GetGroups(ctx context.Context, in *hue.Empty) (*hue.Groups, error) {
 	start := time.Now()
 	gg := groups.New(hueBridge.Bridge, hueBridge.Username)
 	allGroups, err := gg.GetAllGroups()
@@ -97,16 +99,16 @@ func (s Server) GetGroups(ctx context.Context, in *Empty) (*Groups, error) {
 	log.WithField("bridge_exec_time", time.Since(start)).
 		WithField("call", "GetGroups").Print("Incoming gRPC call")
 
-	groups := &Groups{}
-	groups.Groups = make([]*Group, len(allGroups))
+	groups := &hue.Groups{}
+	groups.Groups = make([]*hue.Group, len(allGroups))
 	for i, g := range allGroups {
-		groups.Groups[i] = &Group{ID: int32(g.ID), Name: g.Name, On: g.Action.On, Brightness: int32(g.Action.Bri)}
+		groups.Groups[i] = &hue.Group{ID: int32(g.ID), Name: g.Name, On: g.Action.On, Brightness: int32(g.Action.Bri)}
 	}
 	return groups, nil
 }
 
 // SwitchOn implements hue.Lights
-func (s Server) SwitchOn(ctx context.Context, in *LightsRequest) (*LightsResponse, error) {
+func (s HueServer) SwitchOn(ctx context.Context, in *hue.LightsRequest) (*hue.LightsResponse, error) {
 	log.WithField("message", in).
 		WithField("call", "SwitchOn").Print("Incoming gRPC call")
 	gg := groups.New(hueBridge.Bridge, hueBridge.Username)
@@ -117,19 +119,19 @@ func (s Server) SwitchOn(ctx context.Context, in *LightsRequest) (*LightsRespons
 	brightness := uint8(255 * in.GetBrightnessPercent())
 
 	saturation := uint8(254 * in.GetSaturationPercent()) // 254 is the most saturated color, 0 is the least saturated color (white)
-	hue := uint16(in.GetHue())                           // Value between 0 and 65535 with Red=5535 and Green=25500 and Blue=46920
+	hueInt := uint16(in.GetHue())                        // Value between 0 and 65535 with Red=5535 and Green=25500 and Blue=46920
 
 	gg.SetGroupState(g.ID, lights.State{
 		On:  true,
 		Bri: brightness,
 		Sat: saturation,
-		Hue: hue,
+		Hue: hueInt,
 	})
-	return &LightsResponse{Success: true}, nil
+	return &hue.LightsResponse{Success: true}, nil
 }
 
 // SwitchOff implements hue.Lights
-func (s Server) SwitchOff(ctx context.Context, in *LightsRequest) (*LightsResponse, error) {
+func (s HueServer) SwitchOff(ctx context.Context, in *hue.LightsRequest) (*hue.LightsResponse, error) {
 	log.WithField("message", in).
 		WithField("call", "SwitchOff").Print("Incoming gRPC call")
 	gg := groups.New(hueBridge.Bridge, hueBridge.Username)
@@ -138,12 +140,12 @@ func (s Server) SwitchOff(ctx context.Context, in *LightsRequest) (*LightsRespon
 		return nil, err
 	}
 	gg.SetGroupState(g.ID, lights.State{On: false})
-	return &LightsResponse{Success: true}, nil
+	return &hue.LightsResponse{Success: true}, nil
 }
 
 // Blink implement hue.Lights : It switches on and off the lights in a short time period.
 // After done it resets to the previous state.
-func (s Server) Blink(ctx context.Context, in *LightsRequest) (*LightsResponse, error) {
+func (s HueServer) Blink(ctx context.Context, in *hue.LightsRequest) (*hue.LightsResponse, error) {
 	log.WithField("message", in).
 		WithField("call", "Blink").Print("Incoming gRPC call")
 	gg := groups.New(hueBridge.Bridge, hueBridge.Username)
@@ -157,5 +159,5 @@ func (s Server) Blink(ctx context.Context, in *LightsRequest) (*LightsResponse, 
 	brightness := uint8(255 * in.GetBrightnessPercent())
 	gg.SetGroupState(g.ID, lights.State{On: true, Bri: brightness, Alert: "lselect"})
 	gg.SetGroupState(g.ID, oldState)
-	return &LightsResponse{Success: true}, nil
+	return &hue.LightsResponse{Success: true}, nil
 }

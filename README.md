@@ -51,3 +51,27 @@ they are in the same network or if the Philips Hub API is accessible.
 
 * TLS encrypted connections
 * Lights: Philips Hue support
+
+# Appendix A: Directory Structure
+
+    ├─ api
+    │  ├─ generated                 # Generated Code from protobuf files
+    │  │  ├─ hue                        # Service 1 package
+    │  │  │  └─ hue.pb.go
+    │  │  └─ version                    # Service 2 package
+    │  │     └─ version.pb.go
+    │  └─ proto                     # All the protobuf service definitions
+    │     ├─ hue.proto
+    │     └─ version.proto
+    ├─ client                       # Client implementation, using api/generated code
+    │  ├─ client
+    │  └─ main.go
+    ├─ go.mod
+    ├─ go.sum
+    ├─ server                       # Server implementation, using api/generated code
+    │  ├─ hue.go
+    │  ├─ main.go
+    │  ├─ server
+    │  └─ version.go
+    └─ utils                        # Helper code used by client and server
+        └─ version.go

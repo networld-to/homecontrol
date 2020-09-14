@@ -1,22 +1,25 @@
 # Compiling application
-FROM golang:1.13-alpine as builder
+FROM golang:1.15-alpine as builder
 
-ENV DEP_VERSION v0.4.1
-RUN apk update; apk add git; apk add gcc musl-dev curl
-RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/${DEP_VERSION}/dep-linux-amd64 && chmod +x /usr/local/bin/dep
+RUN apk add --no-cache git gcc musl-dev bash
 
 ENV PROJ github.com/networld-to/homecontrol
 ENV PROJ_DIR /go/src/${PROJ}
-ENV CGO_ENABLED 1
 
 WORKDIR ${PROJ_DIR}
+
+COPY ./go.mod ./go.sum ./
+RUN go mod download
+
 COPY . .
 
-RUN go build -o /tmp/server -buildmode=pie \
--ldflags "-s -w -X ${PROJ}/version.Version=$(git describe --dirty --always) -X '${PROJ}/version.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" server/main.go
+RUN go build -trimpath -buildmode=pie -mod=readonly \
+    -ldflags "-extldflags "-static" -linkmode external -s -w -X ${PROJ}/utils.Version=$(git describe --dirty --always) -X '${PROJ}/utils.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" \
+    -a -o /tmp/server ${PROJ}/server
 
-RUN go build -o /tmp/client -buildmode=pie \
--ldflags "-s -w -X ${PROJ}/version.Version=$(git describe --dirty --always) -X '${PROJ}/version.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" client/main.go
+RUN go build -trimpath -buildmode=pie -mod=readonly \
+    -ldflags "-extldflags "-static" -linkmode external -s -w  -X ${PROJ}/utils.Version=$(git describe --dirty --always) -X '${PROJ}/utils.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" \
+    -a -o /tmp/client ${PROJ}/client
 
 RUN mv /tmp/server /go/bin && \
     mv /tmp/client /go/bin
@@ -24,7 +27,7 @@ RUN mv /tmp/server /go/bin && \
 #####################################################
 # Final, minimized docker image usable in production
 #####################################################
-FROM alpine:3.11
+FROM alpine:3.12
 
 RUN apk add --no-cache ca-certificates
 

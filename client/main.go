@@ -13,8 +13,9 @@ import (
 
 	"context"
 
-	"github.com/networld-to/homecontrol/hue"
-	"github.com/networld-to/homecontrol/version"
+	hue "github.com/networld-to/homecontrol/api/generated/hue"
+	version "github.com/networld-to/homecontrol/api/generated/version"
+	"github.com/networld-to/homecontrol/utils"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
@@ -151,8 +152,8 @@ func main() {
 			fmt.Println()
 		}
 	case "version":
-		log.WithField("version", version.Version).WithField("build", version.Build).Info("Client Version")
-		resp, err := ver.Version(context.Background(), &version.VersionMessage{Version: version.Version, Build: version.Build})
+		log.WithField("version", utils.Version).WithField("build", utils.Build).Info("Client Version")
+		resp, err := ver.Version(context.Background(), &version.VersionMessage{Version: utils.Version, Build: utils.Build})
 		must(err)
 		log.WithField("version", resp.Version).WithField("build", resp.Build).Info("Server Version")
 	default:

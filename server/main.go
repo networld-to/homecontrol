@@ -6,8 +6,9 @@ import (
 	"os"
 	"os/user"
 
-	"github.com/networld-to/homecontrol/hue"
-	"github.com/networld-to/homecontrol/version"
+	hue "github.com/networld-to/homecontrol/api/generated/hue"
+	version "github.com/networld-to/homecontrol/api/generated/version"
+	"github.com/networld-to/homecontrol/utils"
 	log "github.com/sirupsen/logrus"
 
 	"google.golang.org/grpc"
@@ -56,15 +57,15 @@ func main() {
 
 	opts := getServerOptions(*tls)
 	s := grpc.NewServer(opts...)
-	hue.LoadHueBridgeConfig()
-	hue.RegisterLightsServer(s, hue.Server{})
-	version.RegisterVersionServer(s, version.Server{})
+	LoadHueBridgeConfig()
+	hue.RegisterLightsServer(s, HueServer{})
+	version.RegisterVersionServer(s, VersionServer{})
 
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
 
 	log.WithField("endpoint", *endpoint).WithField("type", "grpc").
-		WithField("version", version.Version).WithField("build", version.Build).Infof("Server started")
+		WithField("version", utils.Version).WithField("build", utils.Build).Infof("Server started")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

@@ -20,14 +20,14 @@ help: ## Shows this help
 
 
 build-server:		## Build the server
-	go build -v -o server/server server/main.go
+	go build -v -o server/server github.com/networld-to/homecontrol/server
 
 build-client:   ## Build the client
-	go build -v -o client/client client/main.go
+	go build -v -o client/client github.com/networld-to/homecontrol/client
 
 protoc:						## Generates protobuf code
-	protoc -I hue hue/hue.proto --go_out=plugins=grpc:hue
-	protoc -I version version/version.proto --go_out=plugins=grpc:version
+	protoc -I api/proto hue.proto --go_out=plugins=grpc:api/generated/hue
+	protoc -I api/proto version.proto --go_out=plugins=grpc:api/generated/version
 
 build: protoc build-server build-client # Generates the protobuf code and buils the server and client
 
@@ -52,7 +52,7 @@ tls:              ## Generates TLS certificates for the server, under ~/.homecon
 		-addext "subjectAltName=IP:0.0.0.0,IP:127.0.0.1,IP:192.168.1.2"
 
 clean:          ## Removes generated protobuffer code and binaries. Keeps ~/.homecontrol
-	rm -f */*.pb.go
+	@# rm -f api/generated/*/*.pb.go
 	rm -f server/server client/client
 	@echo "Keeping ${HOME}/.homecontrol"
 
