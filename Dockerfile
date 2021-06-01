@@ -1,5 +1,5 @@
 # Compiling application
-FROM golang:1.15-alpine as builder
+FROM golang:1.16-alpine as builder
 
 RUN apk add --no-cache git gcc musl-dev bash
 
@@ -27,7 +27,7 @@ RUN mv /tmp/server /go/bin && \
 #####################################################
 # Final, minimized docker image usable in production
 #####################################################
-FROM alpine:3.12
+FROM alpine:3.13
 
 RUN apk add --no-cache ca-certificates
 
