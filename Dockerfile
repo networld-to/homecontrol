@@ -1,5 +1,5 @@
 # Compiling application
-FROM golang:1.16-alpine as builder
+FROM golang:1.16.5-alpine3.13 as builder
 
 RUN apk add --no-cache git gcc musl-dev bash
 
@@ -14,20 +14,22 @@ RUN go mod download
 COPY . .
 
 RUN go build -trimpath -buildmode=pie -mod=readonly \
-    -ldflags "-extldflags "-static" -linkmode external -s -w -X ${PROJ}/utils.Version=$(git describe --dirty --always) -X '${PROJ}/utils.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" \
+    -ldflags "-buildid= -extldflags "-static" -linkmode external -s -w -X ${PROJ}/utils.Version=$(git describe --dirty --always) -X '${PROJ}/utils.Build=REPRODUCIBLE'" \
     -a -o /tmp/server ${PROJ}/server
 
 RUN go build -trimpath -buildmode=pie -mod=readonly \
-    -ldflags "-extldflags "-static" -linkmode external -s -w  -X ${PROJ}/utils.Version=$(git describe --dirty --always) -X '${PROJ}/utils.Build=$(date -u '+%Y-%m-%dT%H:%M:%SZ')'" \
+    -ldflags "-buildid= -extldflags "-static" -linkmode external -s -w  -X ${PROJ}/utils.Version=$(git describe --dirty --always) -X '${PROJ}/utils.Build=REPRODUCIBLE'" \
     -a -o /tmp/client ${PROJ}/client
 
 RUN mv /tmp/server /go/bin && \
     mv /tmp/client /go/bin
 
+RUN sha256sum /go/bin/server /go/bin/client
+
 #####################################################
 # Final, minimized docker image usable in production
 #####################################################
-FROM alpine:3.13
+FROM alpine:3.13.5
 
 RUN apk add --no-cache ca-certificates
 

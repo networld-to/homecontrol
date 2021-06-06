@@ -20,10 +20,16 @@ help: ## Shows this help
 
 
 build-server:		## Build the server
-	go build -v -o server/server github.com/networld-to/homecontrol/server
+	go build -trimpath -buildmode=pie -mod=readonly -ldflags "-buildid= -s -w \
+			-X github.com/networld-to/homecontrol/utils.Version=$(shell git describe --dirty --always) \
+			-X 'github.com/networld-to/homecontrol/utils.Build=REPRODUCIBLE'" \
+		-a -o ./server/server github.com/networld-to/homecontrol/server
 
 build-client:   ## Build the client
-	go build -v -o client/client github.com/networld-to/homecontrol/client
+	go build -trimpath -buildmode=pie -mod=readonly -ldflags "-buildid= -s -w \
+			-X github.com/networld-to/homecontrol/utils.Version=$(shell git describe --dirty --always) \
+			-X 'github.com/networld-to/homecontrol/utils.Build=REPRODUCIBLE'" \
+		-a -o ./client/client github.com/networld-to/homecontrol/client
 
 protoc:						## Generates protobuf code
 	protoc -I api/proto hue.proto --go_out=plugins=grpc:api/generated/hue
