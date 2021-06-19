@@ -29,9 +29,9 @@ RUN sha256sum /go/bin/server /go/bin/client
 #####################################################
 # Final, minimized docker image usable in production
 #####################################################
-FROM alpine:3.13.5
+FROM scratch
 
-RUN apk add --no-cache ca-certificates
+COPY --from=alpine:3.13.5 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /
 COPY --from=builder /go/bin/server /
