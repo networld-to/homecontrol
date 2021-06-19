@@ -36,7 +36,7 @@ they are in the same network or if the Philips Hub API is accessible.
 
     # Dockerized client example with service hosted under 192.168.1.2. TLS support
     make tls
-    docker run -it --rm --name homecontrol -v ~/.homecontrol:/root/.homecontrol networld/homecontrol /client -host 192.168.1.2:50051 -tls -cmd blink
+    docker run -it --rm --name homecontrol -v ~/.homecontrol:/.homecontrol networld/homecontrol /client -host 192.168.1.2:50051 -tls -cmd blink
     docker exec -it homecontrol /client -tls
 
 # Examples: Client
