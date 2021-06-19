@@ -27,14 +27,15 @@ func init() {
 
 func getServerOptions(tls bool) []grpc.ServerOption {
 	usr, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
+	var prefix string
+	if err == nil {
+		prefix = usr.HomeDir
 	}
 	opts := []grpc.ServerOption{}
 	if tls {
 		cred, err := credentials.NewServerTLSFromFile(
-			usr.HomeDir+"/.homecontrol/server.crt",
-			usr.HomeDir+"/.homecontrol/server.key",
+			prefix+"/.homecontrol/server.crt",
+			prefix+"/.homecontrol/server.key",
 		)
 		if err != nil {
 			log.Fatalf("failed TLS: %v", err)
