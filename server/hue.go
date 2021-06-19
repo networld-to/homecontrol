@@ -33,10 +33,11 @@ var hueBridge Bridge
 // LoadHueBridgeConfig : Loads the Philips Hue configuration file from file.
 func LoadHueBridgeConfig() Bridge {
 	usr, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
+	var prefix string
+	if err == nil {
+		prefix = usr.HomeDir
 	}
-	content, err := ioutil.ReadFile(usr.HomeDir + "/.philips-hue.json")
+	content, err := ioutil.ReadFile(prefix + "/.philips-hue.json")
 	if err != nil {
 		log.Fatal(err)
 	}
