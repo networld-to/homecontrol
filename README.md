@@ -9,7 +9,7 @@ gRPC and Protobuf.
 The first implemented service allows the control of Philips Hue lights if
 they are in the same network or if the Philips Hub API is accessible.
 
-Sequence Diagrams under [./doc/DIAGRAMS.md](./doc/DIAGRAMS)
+Sequence Diagrams under [./doc/DIAGRAMS.md](./doc/DIAGRAMS.md)
 
 # Getting Started
 
