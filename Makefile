@@ -58,7 +58,7 @@ tls:              ## Generates TLS certificates for the server, under ~/.homecon
 		-addext "subjectAltName=IP:0.0.0.0,IP:127.0.0.1,IP:192.168.1.2"
 
 clean:          ## Removes generated protobuffer code and binaries. Keeps ~/.homecontrol
-	@# rm -f api/generated/*/*.pb.go
+	@rm -f api/generated/*/*.pb.go
 	rm -f server/server client/client
 	@echo "Keeping ${HOME}/.homecontrol"
 

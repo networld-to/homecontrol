@@ -8,7 +8,7 @@ ARG UPGRADE_PACKAGES="false"
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG PROTOC_VERSION=3.13.0
+ARG PROTOC_VERSION=3.19.4
 
 # Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
 COPY library-scripts/*.sh /tmp/library-scripts/
@@ -66,6 +66,8 @@ RUN go get -u github.com/golang/protobuf/protoc-gen-go
 
 ENV GO111MODULE=auto
 WORKDIR /workspaces
+
+RUN chown vscode:vscode -R /go/pkg
 
 # [Optional] Uncomment the next line to use go get to install anything else you need
 # RUN go get -x <your-dependency-or-tool>
