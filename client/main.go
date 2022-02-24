@@ -25,7 +25,7 @@ var (
 	cmd        = flag.String("cmd", "groups", "The command that will be executed.")
 	group      = flag.Int("group", 2, "The light group ID.")
 	tlsFlag    = flag.Bool("tls", false, "Activate TLS communication channel encryption.")
-	brightness = flag.Float64("brightness", 0.66, "Light brightness in percentage. Value between 0 and 1.")
+	brightness = flag.Float64("brightness", 0.80, "Light brightness in percentage. Value between 0 and 1.")
 	saturation = flag.Float64("sat", 0, "Light saturation in percentage. Value between 0 and 1.")
 	hueValue   = flag.Float64("hue", 0, " Value between 0 and 65535 with Red=5535 and Green=25500 and Blue=46920")
 )
