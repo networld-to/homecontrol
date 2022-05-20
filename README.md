@@ -13,6 +13,9 @@ Sequence Diagrams under [./doc/DIAGRAMS.md](./doc/DIAGRAMS.md)
 
 # Getting Started
 
+    # If not yet done create Philips Hue credentials and follow the instructions printed to STDOU
+    $ go run setup/add-application.go
+
     # Build server and client.
     # Install server and client to ${GOPATH}/bin
     make all

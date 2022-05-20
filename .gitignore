@@ -22,3 +22,5 @@ tls/server*
 # **/*.pb.go
 
 sandbox
+
+.vscode/*.log
