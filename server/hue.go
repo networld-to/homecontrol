@@ -19,7 +19,9 @@ import (
 )
 
 // HueServer : The implementation of the Philips Hue gRPC service
-type HueServer struct{}
+type HueServer struct{
+	hue.LightsServer
+}
 
 // Bridge : Connection and authentication information related to the Philips Hue Bridge
 type Bridge struct {

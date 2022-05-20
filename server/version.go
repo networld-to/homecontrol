@@ -9,7 +9,9 @@ import (
 )
 
 // VersionServer : Implementation of the gRPC service
-type VersionServer struct{}
+type VersionServer struct{
+	version.VersionServer
+}
 
 /************************************************************************************
  * Start gRPC Service implementation

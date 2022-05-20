@@ -1,77 +1,38 @@
-# Update the VARIANT arg in devcontainer.json to pick an Go version
-ARG VARIANT=1
-FROM golang:${VARIANT}
+# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.224.3/containers/go/.devcontainer/base.Dockerfile
+
+# [Choice] Go version (use -bullseye variants on local arm64/Apple Silicon): 1, 1.16, 1.17, 1-bullseye, 1.16-bullseye, 1.17-bullseye, 1-buster, 1.16-buster, 1.17-buster
+ARG VARIANT="1.18-bullseye"
+FROM mcr.microsoft.com/vscode/devcontainers/go:0-${VARIANT}
+
+# [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
+ARG NODE_VERSION="none"
+RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
 
 # Options for setup script
-ARG INSTALL_ZSH="true"
-ARG UPGRADE_PACKAGES="false"
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-ARG PROTOC_VERSION=3.19.4
-
-# Install needed packages and setup non-root user. Use a separate RUN statement to add your own dependencies.
-COPY library-scripts/*.sh /tmp/library-scripts/
-RUN apt-get update \
-    && /bin/bash /tmp/library-scripts/common-debian.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
-    && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/library-scripts
-
-# Install Go tools
-ARG GO_TOOLS_WITH_MODULES="\
-    golang.org/x/tools/gopls \
-    honnef.co/go/tools/... \
-    golang.org/x/tools/cmd/gorename \
-    golang.org/x/tools/cmd/goimports \
-    golang.org/x/tools/cmd/guru \
-    golang.org/x/lint/golint \
-    github.com/mdempsky/gocode \
-    github.com/cweill/gotests/... \
-    github.com/haya14busa/goplay/cmd/goplay \
-    github.com/sqs/goreturns \
-    github.com/josharian/impl \
-    github.com/davidrjenni/reftools/cmd/fillstruct \
-    github.com/uudashr/gopkgs/v2/cmd/gopkgs \
-    github.com/ramya-rao-a/go-outline \
-    github.com/acroca/go-symbols \
-    github.com/godoctor/godoctor \
-    github.com/rogpeppe/godef \
-    github.com/zmb3/gogetdoc \
-    github.com/fatih/gomodifytags \
-    github.com/mgechev/revive \
-    github.com/go-delve/delve/cmd/dlv"
-RUN mkdir -p /tmp/gotools \
-    && cd /tmp/gotools \
-    && export GOPATH=/tmp/gotools \
-    # Go tools w/module support
-    && export GO111MODULE=on \
-    && (echo "${GO_TOOLS_WITH_MODULES}" | xargs -n 1 go get -x )2>&1 \
-    # gocode-gomod
-    && export GO111MODULE=auto \
-    && go get -x -d github.com/stamblerre/gocode 2>&1 \
-    && go build -o gocode-gomod github.com/stamblerre/gocode \
-    # golangci-lint
-    && curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b /usr/local/bin 2>&1 \
-    # Move Go tools into path and clean up
-    && mv /tmp/gotools/bin/* /usr/local/bin/ \
-    && mv gocode-gomod /usr/local/bin/ \
-    && rm -rf /tmp/gotools
+ARG PROTOC_VERSION=3.20.1
+# see https://pkg.go.dev/google.golang.org/protobuf
+ARG PROTOBUF_GO_VERSION=v1.28.0
+# see https://pkg.go.dev/google.golang.org/grpc/cmd/protoc-gen-go-grpc
+ARG PROTOBUF_GO_GRPC_VERSION=v1.2.0
 
 ENV PROTOBUF_URL https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip
-RUN curl -L -o /tmp/protobuf.zip $PROTOBUF_URL
+RUN curl -L -o /tmp/protobuf.zip ${PROTOBUF_URL}
 WORKDIR /tmp/
 RUN unzip protobuf.zip && mv bin/protoc /usr/local/bin
 RUN chmod 777 /usr/local/bin/*
 
-RUN go get -u github.com/golang/protobuf/protoc-gen-go
+RUN sudo ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 
-ENV GO111MODULE=auto
+ENV GO111MODULE=on
 WORKDIR /workspaces
-
-RUN chown vscode:vscode -R /go/pkg
 
 # [Optional] Uncomment the next line to use go get to install anything else you need
 # RUN go get -x <your-dependency-or-tool>
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@${PROTOBUF_GO_VERSION} && \
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@${PROTOBUF_GO_GRPC_VERSION}
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
+
+RUN chown vscode:vscode -R /go/

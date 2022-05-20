@@ -1,11 +1,8 @@
-version: '3.8'
 services:
   homecontrol:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        VARIANT: 1 # golang version
     volumes:
       - ..:/workspaces:cached
       - ${HOME}/.philips-hue.json:/home/vscode/.philips-hue.json

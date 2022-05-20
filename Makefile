@@ -32,8 +32,8 @@ build-client:   ## Build the client
 		-a -o ./client/client github.com/networld-to/homecontrol/client
 
 protoc:						## Generates protobuf code
-	protoc -I api/proto hue.proto --go_out=plugins=grpc:api/generated/hue
-	protoc -I api/proto version.proto --go_out=plugins=grpc:api/generated/version
+	protoc -I api/proto hue.proto --go_out=api/generated/hue --go-grpc_out=api/generated/hue
+	protoc -I api/proto version.proto --go_out=api/generated/version --go-grpc_out=api/generated/version
 
 build: protoc build-server build-client # Generates the protobuf code and buils the server and client
 
