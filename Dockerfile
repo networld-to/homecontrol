@@ -1,5 +1,5 @@
 # Compiling application
-FROM golang:1.18-alpine3.15 as builder
+FROM golang:1.18-alpine3.16 as builder
 
 RUN apk add --no-cache git gcc musl-dev bash
 
@@ -31,7 +31,7 @@ RUN sha256sum /go/bin/server /go/bin/client
 #####################################################
 FROM scratch
 
-COPY --from=alpine:3.15 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=alpine:3.16 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /
 COPY --from=builder /go/bin/server /
