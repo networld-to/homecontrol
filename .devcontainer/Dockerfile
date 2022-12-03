@@ -1,7 +1,7 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.224.3/containers/go/.devcontainer/base.Dockerfile
 
 # [Choice] Go version (use -bullseye variants on local arm64/Apple Silicon): 1, 1.16, 1.17, 1-bullseye, 1.16-bullseye, 1.17-bullseye, 1-buster, 1.16-buster, 1.17-buster
-ARG VARIANT="1.18-bullseye"
+ARG VARIANT="1.19-bullseye"
 FROM mcr.microsoft.com/vscode/devcontainers/go:0-${VARIANT}
 
 # [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
@@ -11,7 +11,7 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 # Options for setup script
 ARG PROTOC_VERSION=3.20.1
 # see https://pkg.go.dev/google.golang.org/protobuf
-ARG PROTOBUF_GO_VERSION=v1.28.0
+ARG PROTOBUF_GO_VERSION=v1.28.1
 # see https://pkg.go.dev/google.golang.org/grpc/cmd/protoc-gen-go-grpc
 ARG PROTOBUF_GO_GRPC_VERSION=v1.2.0
 
