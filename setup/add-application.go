@@ -79,7 +79,7 @@ func ssdpDiscover() string {
 type JSONConfig struct {
 	Bridge string `json:"bridge"`
 	Username string `json:"username"`
-	Devicetype string `json:devicetype"`
+	Devicetype string `json:"devicetype"`
 }
 
 func main() {
