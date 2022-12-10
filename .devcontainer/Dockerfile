@@ -8,8 +8,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/go:0-${VARIANT}
 ARG NODE_VERSION="none"
 RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
 
-# Options for setup script
-ARG PROTOC_VERSION=3.20.1
+# see https://github.com/protocolbuffers/protobuf/releases
+ARG PROTOC_VERSION=21.11
 # see https://pkg.go.dev/google.golang.org/protobuf
 ARG PROTOBUF_GO_VERSION=v1.28.1
 # see https://pkg.go.dev/google.golang.org/grpc/cmd/protoc-gen-go-grpc
