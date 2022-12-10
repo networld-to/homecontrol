@@ -31,7 +31,7 @@ RUN sha256sum /go/bin/server /go/bin/client
 #####################################################
 FROM scratch
 
-COPY --from=alpine:3.16 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=alpine:3.17 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /
 COPY --from=builder /go/bin/server /
