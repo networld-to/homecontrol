@@ -3,7 +3,7 @@ module github.com/networld-to/homecontrol
 go 1.19
 
 require (
-	github.com/heatxsink/go-hue v0.0.0-20201117220325-b335d8f4e5ac
+	github.com/networld-to/go-hue v1.0.0
 	github.com/sirupsen/logrus v1.9.0
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1

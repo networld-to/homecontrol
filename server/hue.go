@@ -13,9 +13,9 @@ import (
 
 	hue "github.com/networld-to/homecontrol/api/generated/hue"
 
-	"github.com/heatxsink/go-hue/groups"
-	"github.com/heatxsink/go-hue/lights"
-	"github.com/heatxsink/go-hue/sensors"
+	"github.com/networld-to/go-hue/groups"
+	"github.com/networld-to/go-hue/lights"
+	"github.com/networld-to/go-hue/sensors"
 )
 
 // HueServer : The implementation of the Philips Hue gRPC service

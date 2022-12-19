@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/heatxsink/go-hue/configuration"
-	"github.com/heatxsink/go-hue/portal"
+	"github.com/networld-to/go-hue/configuration"
+	"github.com/networld-to/go-hue/portal"
 )
 
 func ssdpDiscover() string {

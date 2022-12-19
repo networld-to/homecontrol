@@ -6,8 +6,8 @@ github.com/golang/protobuf v1.5.2 h1:ROPKBNFfQgOUMifHyP+KYbvpjbdoFNs+aK7DXlji0Tw
 github.com/golang/protobuf v1.5.2/go.mod h1:XVQd3VNwM+JqD3oG2Ue2ip4fOMUkwXdXDdiuN0vRsmY=
 github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.6 h1:BKbKCqvP6I+rmFHt06ZmyQtvB8xAkWdhFyr0ZUNZcxQ=
-github.com/heatxsink/go-hue v0.0.0-20201117220325-b335d8f4e5ac h1:Ts7aBd76fZRWiuBBtKk1rR1RWa2ttihUIfClXuTPX0k=
-github.com/heatxsink/go-hue v0.0.0-20201117220325-b335d8f4e5ac/go.mod h1:MeBXPrQdPQwocP+nWBaDcrs5CZnk4e1xyvVyS0bgSkc=
+github.com/networld-to/go-hue v1.0.0 h1:YS2D7f4MoqSO24oOmCA6lqFH/DOqHicZ1EvJHBvJSAw=
+github.com/networld-to/go-hue v1.0.0/go.mod h1:ITtsx9ApFDorlm6U8kFBkqq+H4bc9bmTZdXouvNrcQw=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sirupsen/logrus v1.9.0 h1:trlNQbNUG3OdDrDil03MCb1H2o9nJ1x4/5LYw7byDE0=
