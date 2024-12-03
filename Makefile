@@ -73,4 +73,3 @@ docker-run:      ## Runs the docker image and mounts all necessary config files 
 
 push: docker-build ## Builds a docker image and pushes it to hub.docker.com/$(USER)/homecontrol
 	docker push $(USER)/homecontrol
-
